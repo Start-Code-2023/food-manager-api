@@ -2,13 +2,13 @@ package structs
 
 // FoodList A struct to encode information.
 type FoodList struct {
-	UserID   string      `json:"receipt-title"`
-	FoodList []FoodItems `json:"food-list"`
+	UserID     string      `json:"user_id"`
+	Food_items []FoodItems `json:"food_items"`
 }
 
 // FoodItems A struct to encode information
 type FoodItems struct {
-	ID       string `json:"id"`
+	ID       string `json:"ID"`
 	Name     string `json:"name"`
-	Quantity int    `json:"amount"`
+	Quantity int    `json:"quantity"`
 }

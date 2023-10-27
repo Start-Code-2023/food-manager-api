@@ -2,37 +2,43 @@ package handlers
 
 import (
 	"food-manager/db"
-	"food-manager/internal/constants"
 	"food-manager/internal/webserver/utility"
+	"log"
 	"net/http"
 )
 
 // HandlerGet is a handler for the /get endpoint.
 func HandlerGet(w http.ResponseWriter, r *http.Request) {
-	component, urlError := utility.GetOneFirstComponentOnly(constants.GET_PATH, r.URL.Path)
-	if urlError != nil {
-		http.Error(w, "Bad request: Endpoint was not correctly used. Only GET methods are supported", http.StatusBadRequest)
-		return
-	}
-	if component != "" {
-		fetchedFoodItem, err := db.GetFoodItemByIDFromFirebase(component)
+	// Extract the userID and foodID parameters from the URL
+	userID := r.URL.Query().Get("userID")
+	foodID := r.URL.Query().Get("foodID")
+
+	log.Println("Get called!")
+
+	// Check if both userID and foodID parameters are provided
+	if userID != "" && foodID != "" {
+		// Retrieve the specific food item for the given userID and foodID
+		userFoodItem, err := db.GetFoodItemByIDFromFirebase(userID, foodID)
 		if err != nil {
-			http.Error(w, "Food item with ID "+component+" not found", http.StatusNotFound)
+			log.Println("Error during getting the food id or userID")
+			http.Error(w, "Failed to fetch food item for userID "+userID+" and foodID "+foodID, http.StatusNotFound)
 			return
 		}
+
 		// Encode the result and set the response header
-		utility.Encoder(w, fetchedFoodItem)
+		utility.Encoder(w, userFoodItem)
+		log.Println("Encoded Correctly!")
+	} else if userID != "" {
+		// If only userID is provided, retrieve all food items for the given userID
+		userFoodItems, err := db.GetAllFoodItemsFromFirebase(userID)
+		if err != nil {
+			http.Error(w, "Failed to fetch food items for userID "+userID, http.StatusNotFound)
+			return
+		}
+		log.Println(userFoodItems)
+		// Encode the result and set the response header
+		utility.Encoder(w, userFoodItems)
 	} else {
-		allFoodItems, fetchError := db.GetAllFoodItemsFromFirebase()
-		if fetchError != nil {
-			http.Error(w, "Failed to fetch food items", http.StatusInternalServerError)
-			return
-		}
-		if len(allFoodItems.FoodList) == 0 {
-			http.Error(w, "No food items in storage", http.StatusNoContent)
-			return
-		}
-		// Encode the result and set the response header
-		utility.Encoder(w, allFoodItems)
+		http.Error(w, "Invalid combination of query parameters", http.StatusBadRequest)
 	}
 }

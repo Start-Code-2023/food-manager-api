@@ -48,7 +48,7 @@ func getFirestoreClient(path ...string) (*firestore.Client, error) {
 }
 
 // GetAllFoodItemsFromFirebase retrieves all food items from the Firebase database.
-func GetAllFoodItemsFromFirebase() (*structs.FoodList, error) {
+func GetAllFoodItemsFromFirebase(userID string) (*structs.FoodList, error) {
 	client, err := getFirestoreClient()
 	if err != nil {
 		return nil, err
@@ -61,54 +61,36 @@ func GetAllFoodItemsFromFirebase() (*structs.FoodList, error) {
 	// Use a context for the Firestore operations
 	ctx := context.Background()
 
-	// Create a document snapshot
-	snapshot, err := ref.Documents(ctx).GetAll()
+	foodList := structs.FoodList{}
+	// Get a specific document by its ID (userID)
+	doc, err := ref.Doc(userID).Get(ctx)
 	if err != nil {
 		log.Printf("Error retrieving data from Firestore: %v\n", err)
 		return nil, err
 	}
-
-	// Iterate through the documents and decode them into the FoodList struct
-	var foodList structs.FoodList
-	for _, doc := range snapshot {
-		if err := doc.DataTo(&foodList); err != nil {
-			log.Printf("Error decoding Firestore document: %v\n", err)
-			return nil, err
-		}
+	decodeError := doc.DataTo(&foodList)
+	if decodeError != nil {
+		log.Printf("Error decoding: %v\n", decodeError)
+		return nil, decodeError
 	}
-
 	return &foodList, nil
 }
 
-// GetFoodItemByIDFromFirebase retrieves a specific food item from the Firebase database based on the item ID.
-func GetFoodItemByIDFromFirebase(itemID string) (*structs.FoodItems, error) {
-	client, err := getFirestoreClient()
+// GetFoodItemByIDFromFirebase retrieves a specific food item from the Firebase database based on the user ID and item ID.
+func GetFoodItemByIDFromFirebase(userID string, itemID string) (*structs.FoodItems, error) {
+	foodList, err := GetAllFoodItemsFromFirebase(userID)
 	if err != nil {
-		return nil, err
-	}
-	defer client.Close()
-
-	// Create a reference to the Firestore collection
-	ref := client.Collection(constants.FIRESTORE_COLLECTION)
-
-	// Use a context for Firestore operations
-	ctx := context.Background()
-
-	// Get a specific document by its ID
-	doc, err := ref.Doc(itemID).Get(ctx)
-	if err != nil {
-		log.Printf("Error retrieving data from Firestore: %v\n", err)
+		log.Printf("Error retrieving: %v\n", err)
 		return nil, err
 	}
 
-	// Decode the document into a FoodItems struct
-	var foodItem structs.FoodItems
-	if err := doc.DataTo(&foodItem); err != nil {
-		log.Printf("Error decoding Firestore document: %v\n", err)
-		return nil, err
+	foodItems := foodList.Food_items
+	for _, foodItem := range foodItems {
+		if foodItem.ID == itemID {
+			return &foodItem, nil
+		}
 	}
-
-	return &foodItem, nil
+	return nil, nil
 }
 
 // AddFoodItemToFirebase adds a new food item to the Firebase database.
