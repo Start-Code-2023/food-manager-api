@@ -10,13 +10,11 @@ const (
 
 	// The paths that will be handled by each handler
 	DEFAULT_PATH = "/foodmanager/"
+	GET_PATH     = DEFAULT_PATH + VERSION + "/get/"
+	REMOVE_PATH  = DEFAULT_PATH + VERSION + "/remove/"
+	ADD_PATH     = DEFAULT_PATH + VERSION + "/add/"
 
-	FIRESTORE_COLLECTION = "webhooks" // Name of the main collection for the webhooks
+	FIRESTORE_COLLECTION = "food_list" // Name of the main collection for the food list
 
-	MAX_WEBHOOK_COUNT = 40 // Max amount of notifications added
-
-	// ASCENDING Used to address way of sorting.
-	ASCENDING = 1
-	// DESCENDING Used to address way of sorting.
-	DESCENDING = 2
+	FIREBASE_CREDENTIALS_FILE_PATH = "./firebaseCredentials.json" // Name of the credential file
 )

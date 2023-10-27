@@ -12,7 +12,7 @@ func main() {
 	// Handle port assignment (either based on environment variable, or local override)
 	port := os.Getenv("PORT")
 	if port == "" {
-		log.Println("PORT has not been set. Default: 8080", constants.DEFAULT_PORT)
+		log.Println("PORT has not been set. Default:", constants.DEFAULT_PORT)
 	}
 	webserver.InitServer()
 }
