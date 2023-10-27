@@ -11,6 +11,7 @@ import (
 func InitServer() {
 	// Points the different URL-paths to the correct handler
 	http.HandleFunc(constants.DEFAULT_PATH, handlers.HandlerDefault)
+	http.HandleFunc(constants.GET_PATH, handlers.HandlerGet)
 
 	// Starting HTTP-server
 	log.Println("Starting server on port " + constants.DEFAULT_PORT + " ...")
