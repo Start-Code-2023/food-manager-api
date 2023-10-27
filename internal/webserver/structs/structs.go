@@ -2,11 +2,17 @@ package structs
 
 import "time"
 
-// FoodInformation A struct to encode information.
-type FoodInformation struct {
+// ReceiptInformation A struct to encode information.
+type ReceiptInformation struct {
 	ReceiptTitle string    `json:"receipt-title"`
 	FoodList     []string  `json:"food-list"`
 	Cache        time.Time // Time in cache.
+}
+
+// FoodInformation A struct to encode information
+type FoodInformation struct {
+	Name   string `json:"name"`
+	Amount int    `json:"amount"`
 }
 
 type Webhook struct {
