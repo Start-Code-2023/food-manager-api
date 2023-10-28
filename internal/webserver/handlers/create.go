@@ -11,6 +11,13 @@ import (
 
 
 func CreateFoodListDoc(w http.ResponseWriter, r *http.Request){
+
+	// Return an error if the HTTP method is not GET.
+	if r.Method != http.MethodPost {
+		http.Error(w, "This endpoint uses HTTP Post", http.StatusMethodNotAllowed)
+		return 
+	}
+
 	// New Document ID
 	userID := utility.RandStringRunes(constants.DOC_ID_LENGTH)
 

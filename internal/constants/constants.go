@@ -13,6 +13,7 @@ const (
 	GET_PATH     = DEFAULT_PATH + VERSION + "/get/"
 	REMOVE_PATH  = DEFAULT_PATH + VERSION + "/remove/"
 	ADD_PATH     = DEFAULT_PATH + VERSION + "/add/"
+	CREATE_PATH = DEFAULT_PATH + VERSION + "/create/"
 
 	FIRESTORE_COLLECTION = "food_list" // Name of the main collection for the food list
 
