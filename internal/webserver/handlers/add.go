@@ -11,7 +11,7 @@ import (
 
 
 func AddFoodHandler(w http.ResponseWriter, r *http.Request){
-	log.Println(r.Method)
+
 	// Return an error if the HTTP method is not GET.
 	if r.Method != http.MethodPost {
 		http.Error(w, "This endpoint uses HTTP Post", http.StatusMethodNotAllowed)
