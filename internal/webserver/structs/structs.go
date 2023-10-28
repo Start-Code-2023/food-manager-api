@@ -11,8 +11,9 @@ type FoodItems struct {
 	ID       string `json:"ID"`
 	Name     string `json:"name"`
 	Quantity int    `json:"quantity"`
+	Tags     string `json:"tags"`
 }
 
-type DocumentCreatedResponse struct{
-	ID       string `json:"ID"`
+type DocumentCreatedResponse struct {
+	ID string `json:"ID"`
 }

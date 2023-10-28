@@ -1,0 +1,6 @@
+{
+    "Fridge": ["milk", "eggs", "cheese", "yogurt", "lettuce", "tomatoes", "carrots", "soda"],
+    "Freezer": ["frozen pizza", "ice cream", "frozen vegetables", "frozen meat"],
+    "Dry Storage": ["rice", "pasta", "canned soup", "cereal", "flour", "sugar", "coffee"]
+}
+
