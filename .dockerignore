@@ -1,0 +1,6 @@
+# flyctl launch added from .gitignore
+# Ignored files
+**/*.iml
+**/.idea
+**/firebaseCredentials.json
+fly.toml
