@@ -189,3 +189,55 @@ func UpdateFoodListInFirebase(userID string, foodList *structs.FoodList) error {
 
 	return nil
 }
+
+// Setting a document with correct FoodList 
+func SetUserIDList(newFoodList structs.FoodList) error{
+	client, err := getFirestoreClient()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	// Create a reference to the Firestore collection
+	ref := client.Collection(constants.FIRESTORE_COLLECTION)
+
+	// Use a context for Firestore operations
+	ctx := context.Background()
+
+
+	_, err = ref.Doc(newFoodList.UserID).Set(ctx, newFoodList)
+	if err != nil {
+		log.Println("Error on creating a new document in firestore: " + err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func AddDocument(userID string) error{
+
+	client, err := getFirestoreClient()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	// Create a reference to the Firestore collection
+	ref := client.Collection(constants.FIRESTORE_COLLECTION)
+
+	// Use a context for Firestore operations
+	ctx := context.Background()
+
+	// Create a new struct
+	newFoodList := structs.FoodList{UserID: userID, Food_items: nil}
+
+
+	// Create a new document and add it to the 
+	_, err = ref.Doc(userID).Set(ctx, newFoodList)
+	if err != nil {
+		log.Println("Error on creating a new document in firestore: " + err.Error())
+		return err
+	}
+
+	return nil
+}
