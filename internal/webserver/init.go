@@ -13,6 +13,7 @@ func InitServer() {
 	http.HandleFunc(constants.DEFAULT_PATH, handlers.HandlerDefault)
 	http.HandleFunc(constants.GET_PATH, handlers.HandlerGet)
 	http.HandleFunc(constants.ADD_PATH, handlers.AddFoodHandler)
+	http.HandleFunc(constants.CREATE_PATH, handlers.CreateFoodListDoc)
 
 	// Starting HTTP-server
 	log.Println("Starting server on port " + constants.DEFAULT_PORT + " ...")

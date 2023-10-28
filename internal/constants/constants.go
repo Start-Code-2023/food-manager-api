@@ -13,8 +13,12 @@ const (
 	GET_PATH     = DEFAULT_PATH + VERSION + "/get/"
 	REMOVE_PATH  = DEFAULT_PATH + VERSION + "/remove/"
 	ADD_PATH     = DEFAULT_PATH + VERSION + "/add/"
+	CREATE_PATH = DEFAULT_PATH + VERSION + "/create/"
 
 	FIRESTORE_COLLECTION = "food_list" // Name of the main collection for the food list
 
 	FIREBASE_CREDENTIALS_FILE_PATH = "./firebaseCredentials.json" // Name of the credential file
+
+	// Length of the document ID
+	DOC_ID_LENGTH = 20
 )
