@@ -12,6 +12,7 @@ func InitServer() {
 	// Points the different URL-paths to the correct handler
 	http.HandleFunc(constants.DEFAULT_PATH, handlers.HandlerDefault)
 	http.HandleFunc(constants.GET_PATH, handlers.HandlerGet)
+	http.HandleFunc(constants.REMOVE_PATH, handlers.HandlerRemove)
 	http.HandleFunc(constants.ADD_PATH, handlers.AddFoodHandler)
 	http.HandleFunc(constants.CREATE_PATH, handlers.CreateFoodListDoc)
 

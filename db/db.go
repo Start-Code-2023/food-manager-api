@@ -4,6 +4,7 @@ import (
 	"cloud.google.com/go/firestore"
 	"context"
 	firebase "firebase.google.com/go"
+	"fmt"
 	"food-manager/internal/constants"
 	"food-manager/internal/webserver/structs"
 	"google.golang.org/api/option"
@@ -118,10 +119,53 @@ func AddFoodItemToFirebase(foodItem structs.FoodItems) (string, error) {
 	return "GeneratedID", nil
 }
 
-// DeleteFoodItemFromFirebase deletes a specific food item from the Firebase database based on the item ID.
-func DeleteFoodItemFromFirebase(itemID string) error {
+// RemoveFoodItemByIDFromFirebase removes a specific food item from the Firebase database based on the user ID, item ID, and quantity.
+func RemoveFoodItemByIDFromFirebase(userID, itemID string, quantity int) error {
+	// Retrieve the user's food list
+	foodList, err := GetAllFoodItemsFromFirebase(userID)
+	if err != nil {
+		log.Printf("Error retrieving user's food list: %v\n", err)
+		return err
+	}
+
+	// Find the food item to remove
+	var indexToRemove int
+	for i, foodItem := range foodList.Food_items {
+		if foodItem.ID == itemID {
+			indexToRemove = i
+			break
+		}
+	}
+
+	if indexToRemove >= 0 {
+		// Check if the item quantity to remove is greater than or equal to the total quantity
+		if quantity >= foodList.Food_items[indexToRemove].Quantity {
+			// Remove the entire food item from the list
+			foodList.Food_items = append(foodList.Food_items[:indexToRemove], foodList.Food_items[indexToRemove+1:]...)
+		} else {
+			// Reduce the item's quantity
+			foodList.Food_items[indexToRemove].Quantity -= quantity
+		}
+
+		// Update the Firestore database with the modified food list
+		err = UpdateFoodListInFirebase(userID, foodList)
+		if err != nil {
+			log.Printf("Error updating the food list in Firestore: %v\n", err)
+			return err
+		}
+	} else {
+		log.Printf("Food item with ID %s not found for user %s\n", itemID, userID)
+		return fmt.Errorf("Food item not found")
+	}
+
+	return nil
+}
+
+// UpdateFoodListInFirebase updates the user's food list in the Firebase database.
+func UpdateFoodListInFirebase(userID string, foodList *structs.FoodList) error {
 	client, err := getFirestoreClient()
 	if err != nil {
+		log.Printf("Error getting Firestore client: %v\n", err)
 		return err
 	}
 	defer client.Close()
@@ -132,11 +176,15 @@ func DeleteFoodItemFromFirebase(itemID string) error {
 	// Use a context for Firestore operations
 	ctx := context.Background()
 
-	// Delete the document by its ID
-	_, err = ref.Doc(itemID).Delete(ctx)
-	if err != nil {
-		log.Printf("Error deleting data from Firestore: %v\n", err)
-		return err
+	// Convert the food list to a map for updating Firestore
+	foodListMap := make(map[string]interface{})
+	foodListMap["Food_items"] = foodList.Food_items
+
+	// Update the user's food list
+	_, updateErr := ref.Doc(userID).Set(ctx, foodListMap)
+	if updateErr != nil {
+		log.Printf("Error updating food list in Firestore: %v\n", updateErr)
+		return updateErr
 	}
 
 	return nil
