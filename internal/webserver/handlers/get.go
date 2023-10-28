@@ -13,8 +13,6 @@ func HandlerGet(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("userID")
 	foodID := r.URL.Query().Get("foodID")
 
-	log.Println("Get called!")
-
 	// Check if both userID and foodID parameters are provided
 	if userID != "" && foodID != "" {
 		// Retrieve the specific food item for the given userID and foodID
@@ -27,7 +25,6 @@ func HandlerGet(w http.ResponseWriter, r *http.Request) {
 
 		// Encode the result and set the response header
 		utility.Encoder(w, userFoodItem)
-		log.Println("Encoded Correctly!")
 	} else if userID != "" {
 		// If only userID is provided, retrieve all food items for the given userID
 		userFoodItems, err := db.GetAllFoodItemsFromFirebase(userID)
@@ -35,7 +32,6 @@ func HandlerGet(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to fetch food items for userID "+userID, http.StatusNotFound)
 			return
 		}
-		log.Println(userFoodItems)
 		// Encode the result and set the response header
 		utility.Encoder(w, userFoodItems)
 	} else {
