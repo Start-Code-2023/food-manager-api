@@ -241,3 +241,27 @@ func AddDocument(userID string) error{
 
 	return nil
 }
+
+func DeleteDocument(userID string) error{
+	client, err := getFirestoreClient()
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	// Create a reference to the Firestore collection
+	ref := client.Collection(constants.FIRESTORE_COLLECTION)
+
+	// Use a context for Firestore operations
+	ctx := context.Background()
+
+
+	// Create a new document and add it to the 
+	_, err = ref.Doc(userID).Delete(ctx)
+	if err != nil {
+		log.Println("Error on creating a new document in firestore: " + err.Error())
+		return err
+	}
+
+	return nil
+}

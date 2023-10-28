@@ -15,6 +15,7 @@ func InitServer() {
 	http.HandleFunc(constants.REMOVE_PATH, handlers.HandlerRemove)
 	http.HandleFunc(constants.ADD_PATH, handlers.AddFoodHandler)
 	http.HandleFunc(constants.CREATE_PATH, handlers.CreateFoodListDoc)
+	http.HandleFunc(constants.DELETE_PATH, handlers.DeleteFoodListDocHandler)
 
 	// Starting HTTP-server
 	log.Println("Starting server on port " + constants.DEFAULT_PORT + " ...")
