@@ -42,10 +42,10 @@ func AddFoodHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utility.AssignTagsToFoodList(foodItemResponse)
-
 	// Update the foodItems list with the given food item list
 	foodItemResponse = utility.AddFoodItems(givenFoodList.Food_items, foodItemResponse)
+
+	utility.AssignTagsToFoodList(foodItemResponse)
 
 	// Set the document with the new list items
 	err = db.SetUserIDList(*foodItemResponse)
