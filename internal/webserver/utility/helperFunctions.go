@@ -5,6 +5,7 @@ import (
 	"food-manager/internal/webserver/structs"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 // AssignTagsToFoodItem assigns tags to a food item based on its name.
@@ -40,6 +41,7 @@ func getCategoryForFoodItem(foodItemName string, predefinedTags map[string][]str
 
 func contains(items []string, item string) bool {
 	for _, i := range items {
+		item := strings.ToLower(item)
 		if i == item {
 			return true
 		}
